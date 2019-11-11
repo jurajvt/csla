@@ -2,6 +2,7 @@ using Csla;
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ProjectTracker.Library
 {
@@ -27,27 +28,24 @@ namespace ProjectTracker.Library
       }
     }
 
-    public static ResourceList EmptyList()
+    public static async Task<ResourceList> GetEmptyListAsync()
     {
-      return new ResourceList();
+      return await DataPortal.CreateAsync<ResourceList>();
     }
 
-    public static void GetResourceList(EventHandler<DataPortalResult<ResourceList>> callback)
-    {
-      DataPortal.BeginFetch<ResourceList>(callback);
-    }
-#if !WINDOWS_PHONE
     public async static System.Threading.Tasks.Task<ResourceList> GetResourceListAsync()
     {
       return await DataPortal.FetchAsync<ResourceList>();
     }
-#endif
+
 #if FULL_DOTNET
     public static ResourceList GetResourceList()
     {
       return DataPortal.Fetch<ResourceList>();
     }
+#endif
 
+    [Fetch]
     private void DataPortal_Fetch()
     {
       var rlce = RaiseListChangedEvents;
@@ -64,6 +62,5 @@ namespace ProjectTracker.Library
       IsReadOnly = true;
       RaiseListChangedEvents = rlce;
     }
-#endif
   }
 }

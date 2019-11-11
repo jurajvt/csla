@@ -1,15 +1,12 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="SilverlightPrincipal.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 using System;
 using System.Security.Principal;
-#if SILVERLIGHT
-using Csla.Serialization;
-#endif
 
 namespace Csla.Testing.Business.Security
 {

@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="SerializationTests.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -14,6 +14,7 @@ using System.Diagnostics;
 using Csla.Serialization;
 using Csla.Test.ValidationRules;
 using UnitDriven;
+using System.Threading.Tasks;
 
 #if NUNIT
 using NUnit.Framework;
@@ -58,6 +59,13 @@ namespace Csla.Test.Serialization
       var obj2 = (Csla.Server.DataPortalException)Csla.Core.ObjectCloner.Clone(obj);
       Assert.IsFalse(ReferenceEquals(obj, obj2));
       Assert.AreEqual(obj.Message, obj2.Message);
+    }
+
+    [TestMethod]
+    public void CorrectDefaultSerializer()
+    {
+      var serializer = ApplicationContext.SerializationFormatter;
+      Assert.AreEqual(ApplicationContext.SerializationFormatters.BinaryFormatter, serializer);
     }
 
     [TestMethod()]
@@ -198,7 +206,7 @@ namespace Csla.Test.Serialization
         b.Serialize(new MemoryStream(), root);
         Assert.Fail("Serialization should have thrown an exception");
       }
-      catch (System.Runtime.Serialization.SerializationException ex)
+      catch (System.Runtime.Serialization.SerializationException)
       {
         // serialization failed as expected
       }
@@ -225,23 +233,21 @@ namespace Csla.Test.Serialization
     }
 
     [TestMethod()]
-    public void TestValidationRulesAfterSerialization()
+    [TestCategory("SkipWhenLiveUnitTesting")]
+    public async Task TestValidationRulesAfterSerialization()
     {
       UnitTestContext context = GetContext();
-      HasRulesManager.NewHasRulesManager((o, e) =>
-      {
-        HasRulesManager root = e.Object;
-        root.Name = "";
-        context.Assert.AreEqual(false, root.IsValid, "root should not start valid");
+      var root = await Csla.DataPortal.CreateAsync<HasRulesManager>(new HasRulesManager.Criteria());
+      root.Name = "";
+      context.Assert.AreEqual(false, root.IsValid, "root should not start valid");
 
-        root = root.Clone();
-        context.Assert.AreEqual(false, root.IsValid, "root should not be valid after clone");
-        root.Name = "something";
-        context.Assert.AreEqual(true, root.IsValid, "root should be valid after property set");
-        root = root.Clone();
-        context.Assert.AreEqual(true, root.IsValid, "root should be valid after second clone");
-        context.Assert.Success();
-      });
+      root = root.Clone();
+      context.Assert.AreEqual(false, root.IsValid, "root should not be valid after clone");
+      root.Name = "something";
+      context.Assert.AreEqual(true, root.IsValid, "root should be valid after property set");
+      root = root.Clone();
+      context.Assert.AreEqual(true, root.IsValid, "root should be valid after second clone");
+      context.Assert.Success();
 
       context.Complete();
     }
@@ -385,18 +391,22 @@ namespace Csla.Test.Serialization
         Assert.AreEqual("Property set not allowed", ex.Message);
       }
 
+#pragma warning disable CS0436 // Type conflicts with imported type
       Csla.Test.Security.TestPrincipal.SimulateLogin();
+#pragma warning restore CS0436 // Type conflicts with imported type
 
       try
       {
         root.FirstName = "something";
       }
-      catch (Csla.Security.SecurityException ex)
+      catch (Csla.Security.SecurityException)
       {
         Assert.Fail("exception occurred");
       }
 
+#pragma warning disable CS0436 // Type conflicts with imported type
       Csla.Test.Security.TestPrincipal.SimulateLogout();
+#pragma warning restore CS0436 // Type conflicts with imported type
 
       Csla.Test.Security.PermissionsRoot rootClone = root.Clone();
 
@@ -410,18 +420,22 @@ namespace Csla.Test.Serialization
         Assert.AreEqual("Property set not allowed", ex.Message);
       }
 
+#pragma warning disable CS0436 // Type conflicts with imported type
       Csla.Test.Security.TestPrincipal.SimulateLogin();
+#pragma warning restore CS0436 // Type conflicts with imported type
 
       try
       {
         rootClone.FirstName = "something new";
       }
-      catch (Csla.Security.SecurityException ex)
+      catch (Csla.Security.SecurityException)
       {
         Assert.Fail("exception occurred");
       }
 
+#pragma warning disable CS0436 // Type conflicts with imported type
       Csla.Test.Security.TestPrincipal.SimulateLogout();
+#pragma warning restore CS0436 // Type conflicts with imported type
 
     }
 
@@ -443,6 +457,7 @@ namespace Csla.Test.Serialization
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void DCClone()
     {
       System.Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] =
@@ -463,15 +478,9 @@ namespace Csla.Test.Serialization
     }
 
     [TestMethod]
+    
     public void DCEditLevels()
     {
-      System.Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] =
-        "NetDataContractSerializer";
-      Assert.AreEqual(
-        Csla.ApplicationContext.SerializationFormatters.NetDataContractSerializer,
-        Csla.ApplicationContext.SerializationFormatter,
-        "Formatter should be NetDataContractSerializer");
-
       DCRoot root = new DCRoot();
       root.BeginEdit();
       root.Data = 123;
@@ -504,13 +513,13 @@ namespace Csla.Test.Serialization
     }
 
     [TestMethod]
+    
     public void SerializeCommand()
     {
       var cmd = new TestCommand();
       cmd.Name = "test data";
 
       var buffer = new System.IO.MemoryStream();
-#if !SILVERLIGHT
       var bf = (TestCommand)Csla.Core.ObjectCloner.Clone(cmd);
       Assert.AreEqual(cmd.Name, bf.Name, "after BinaryFormatter");
 
@@ -519,7 +528,6 @@ namespace Csla.Test.Serialization
       buffer.Position = 0;
       var n = (TestCommand)ndcs.Deserialize(buffer);
       Assert.AreEqual(cmd.Name, n.Name, "after NDCS");
-#endif
 
       buffer = new System.IO.MemoryStream();
       var mf = new Csla.Serialization.Mobile.MobileFormatter();
@@ -529,8 +537,8 @@ namespace Csla.Test.Serialization
       Assert.AreEqual(cmd.Name, m.Name, "after MobileFormatter");
     }
 
-#if !SILVERLIGHT
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void CommandOverDataPortal()
     {
       Csla.ApplicationContext.DataPortalProxy = "Csla.Testing.Business.TestProxies.AppDomainProxy, Csla.Testing.Business";
@@ -549,9 +557,8 @@ namespace Csla.Test.Serialization
         System.Configuration.ConfigurationManager.AppSettings["CslaDataPortalProxy"] = null;
       }
     }
-#endif
 
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
     [TestMethod]
     public void UseCustomSerializationFormatter()
     {

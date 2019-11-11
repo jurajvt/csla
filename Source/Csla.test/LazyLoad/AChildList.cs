@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="AChildList.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -20,7 +20,7 @@ namespace Csla.Test.LazyLoad
       this.Add(new AChild());
     }
 
-    public int EditLevel
+    public new int EditLevel
     {
       get { return base.EditLevel; }
     }

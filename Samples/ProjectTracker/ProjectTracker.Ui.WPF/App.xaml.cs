@@ -13,10 +13,6 @@ namespace ProjectTracker.Ui.WPF
   /// </summary>
   public partial class App : Application
   {
-    protected async override void OnStartup(StartupEventArgs e)
-    {
-      base.OnStartup(e);
-      await ProjectTracker.Library.RoleList.CacheListAsync();
-    }
+    public static IServiceProvider ServiceProvider { get; set; }
   }
 }

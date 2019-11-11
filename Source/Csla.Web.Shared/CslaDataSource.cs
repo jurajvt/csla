@@ -1,11 +1,10 @@
 //-----------------------------------------------------------------------
 // <copyright file="CslaDataSource.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>A Web Forms data binding control designed to support</summary>
 //-----------------------------------------------------------------------
-#if !CLIENTONLY
 using System;
 using System.Web.UI;
 using System.ComponentModel;
@@ -215,4 +214,3 @@ namespace Csla.Web
     }
   }
 }
-#endif

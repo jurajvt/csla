@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="DefaultDataPortalActivator.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Defines a type used to activate concrete business instances.</summary>
 //-----------------------------------------------------------------------
@@ -25,6 +25,12 @@ namespace Csla.Server
     public void FinalizeInstance(object obj)
     {
       // do no work by default
+    }
+
+    public Type ResolveType(Type requestedType)
+    {
+      // return requested type by default
+      return requestedType;
     }
   }
 }

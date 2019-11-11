@@ -1,11 +1,10 @@
 //-----------------------------------------------------------------------
 // <copyright file="SelectObjectArgs.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Argument object used in the SelectObject event.</summary>
 //-----------------------------------------------------------------------
-#if !CLIENTONLY
 using System;
 using System.ComponentModel;
 
@@ -161,4 +160,3 @@ namespace Csla.Web
     }
   }
 }
-#endif

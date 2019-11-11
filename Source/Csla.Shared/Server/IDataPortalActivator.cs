@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="IDataPortalActivator.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Defines a type used to activate concrete business instances.</summary>
 //-----------------------------------------------------------------------
@@ -32,5 +32,11 @@ namespace Csla.Server
     /// </summary>
     /// <param name="obj">Reference to the business object.</param>
     void FinalizeInstance(object obj);
+    /// <summary>
+    /// Gets the actual business domain class type based on the
+    /// requested type (which might be an interface).
+    /// </summary>
+    /// <param name="requestedType">Type requested from the data portal.</param>
+    Type ResolveType(Type requestedType);
   }
 }

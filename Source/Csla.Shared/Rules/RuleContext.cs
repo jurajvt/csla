@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="RuleContext.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Context information provided to a business rule</summary>
 //-----------------------------------------------------------------------
@@ -16,9 +16,11 @@ using Csla.Threading;
 
 namespace Csla.Rules
 {
-
+  /// <summary>
+  /// RuleContext mode flags
+  /// </summary>
   [Flags]
-  internal enum RuleContextModes
+  public enum RuleContextModes
   {
     /// <summary>
     /// Default value, rule can run in any context
@@ -41,17 +43,18 @@ namespace Csla.Rules
     /// </summary>
     AsAffectedPoperty = 8,
   }
+
   /// <summary>
   /// Context information provided to a business rule
   /// when it is invoked.
   /// </summary>
-  public class RuleContext
+  public class RuleContext : IRuleContext
   {
     /// <summary>
     /// Gets the rule object.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public IBusinessRule Rule { get; internal set; }
+    public IBusinessRuleBase Rule { get; internal set; }
 
     /// <summary>
     /// Gets a reference to the target business object.
@@ -122,7 +125,7 @@ namespace Csla.Rules
       }
     }
 
-    private readonly Action<RuleContext> _completeHandler;
+    private readonly Action<IRuleContext> _completeHandler;
 
     /// <summary>
     /// Gets or sets the name of the origin property.
@@ -135,7 +138,7 @@ namespace Csla.Rules
     /// Gets the execution context.
     /// </summary>
     /// <value>The execution context.</value>
-    internal RuleContextModes ExecuteContext { get; set; }
+    public RuleContextModes ExecuteContext { get; internal set; }
 
 
     /// <summary>
@@ -143,11 +146,18 @@ namespace Csla.Rules
     /// Creates a chained context and if CanRunRule will execute the inner rule.  
     /// </summary>
     /// <param name="innerRule">The inner rule.</param>
-    public void ExecuteRule(IBusinessRule innerRule)
+    public void ExecuteRule(IBusinessRuleBase innerRule)
     {
       var chainedContext = GetChainedContext(innerRule);
       if (BusinessRules.CanRunRule(innerRule, chainedContext.ExecuteContext))
-        innerRule.Execute(chainedContext);
+      {
+        if (innerRule is IBusinessRule syncRule)
+          syncRule.Execute(chainedContext);
+        else if (innerRule is IBusinessRuleAsync asyncRule)
+          asyncRule.ExecuteAsync(chainedContext).ContinueWith((t) => { chainedContext.Complete(); });
+        else
+          throw new ArgumentOutOfRangeException(innerRule.GetType().FullName);
+      }
     }
 
     /// <summary>
@@ -198,19 +208,19 @@ namespace Csla.Rules
       get { return (ExecuteContext & RuleContextModes.CheckObjectRules) > 0; }
     }
 
-    internal RuleContext(Action<RuleContext> completeHandler)
+    internal RuleContext(Action<IRuleContext> completeHandler)
     {
       _completeHandler = completeHandler;
       _outputPropertyValues = new LazySingleton<Dictionary<IPropertyInfo, object>>();
       _dirtyProperties = new LazySingleton<List<IPropertyInfo>>();
     }
 
-    internal RuleContext(Action<RuleContext> completeHandler, RuleContextModes executeContext) : this(completeHandler)
+    internal RuleContext(Action<IRuleContext> completeHandler, RuleContextModes executeContext) : this(completeHandler)
     {
       ExecuteContext = executeContext;
     }
 
-    internal RuleContext(Action<RuleContext> completeHandler, LazySingleton<Dictionary<IPropertyInfo, object>> outputPropertyValues, LazySingleton<List<IPropertyInfo>> dirtyProperties, RuleContextModes executeContext)
+    internal RuleContext(Action<IRuleContext> completeHandler, LazySingleton<Dictionary<IPropertyInfo, object>> outputPropertyValues, LazySingleton<List<IPropertyInfo>> dirtyProperties, RuleContextModes executeContext)
     {
       _completeHandler = completeHandler;
       _outputPropertyValues = outputPropertyValues;
@@ -225,7 +235,7 @@ namespace Csla.Rules
     /// <param name="rule">Reference to the rule object.</param>
     /// <param name="target">Target business object.</param>
     /// <param name="inputPropertyValues">Input property values used by the rule.</param>
-    public RuleContext(Action<RuleContext> completeHandler, IBusinessRule rule, object target, Dictionary<Csla.Core.IPropertyInfo, object> inputPropertyValues)
+    public RuleContext(Action<IRuleContext> completeHandler, IBusinessRuleBase rule, object target, Dictionary<Csla.Core.IPropertyInfo, object> inputPropertyValues)
       : this(completeHandler)
     {
       Rule = rule;
@@ -247,7 +257,7 @@ namespace Csla.Rules
     /// of the Rule property which is set using the supplied
     /// IBusinessRule value.
     /// </remarks>
-    public RuleContext GetChainedContext(IBusinessRule rule)
+    public IRuleContext GetChainedContext(IBusinessRuleBase rule)
     {
       var result = new RuleContext(_completeHandler, _outputPropertyValues, _dirtyProperties, ExecuteContext);
       result.Rule = rule;
@@ -424,7 +434,7 @@ namespace Csla.Rules
     {
       if (Results.Count == 0)
         Results.Add(new RuleResult(Rule.RuleName, Rule.PrimaryProperty));
-      _completeHandler(this);
+      _completeHandler?.Invoke(this);
     }
 
     /// <summary>

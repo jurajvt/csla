@@ -26,70 +26,162 @@ namespace Csla.Analyzers.Tests
         nameof(DiagnosticDescriptor.Category));
       Assert.AreEqual(DiagnosticSeverity.Warning, diagnostic.DefaultSeverity,
         nameof(DiagnosticDescriptor.DefaultSeverity));
+      Assert.AreEqual(HelpUrlBuilder.Build(Constants.AnalyzerIdentifiers.FindOperationsWithNonSerializableArguments, nameof(FindOperationsWithNonSerializableArgumentsAnalyzer)),
+        diagnostic.HelpLinkUri,
+        nameof(DiagnosticDescriptor.HelpLinkUri));
     }
 
     [TestMethod]
     public async Task AnalyzeWithNotMobileObject()
     {
+      var code = "public class A { }";
       await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
-        $@"Targets\{nameof(FindOperationsWithNonSerializableArgumentsAnalyzerTests)}\{(nameof(this.AnalyzeWithNotMobileObject))}.cs",
-        Array.Empty<string>());
+        code, Array.Empty<string>());
     }
 
     [TestMethod]
     public async Task AnalyzeWithMobileObjectAndMethodIsNotOperation()
     {
+      var code =
+@"using Csla;
+
+public class A : BusinessBase<A>
+{
+  public void Foo() { }
+}";
       await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
-        $@"Targets\{nameof(FindOperationsWithNonSerializableArgumentsAnalyzerTests)}\{(nameof(this.AnalyzeWithMobileObjectAndMethodIsNotOperation))}.cs",
-        Array.Empty<string>());
+        code, Array.Empty<string>());
     }
 
     [TestMethod]
     public async Task AnalyzeWithMobileObjectAndMethodIsRootOperationWithNoArguments()
     {
+      var code =
+@"using Csla;
+
+public class A : BusinessBase<A>
+{
+  [Fetch]
+  private void Fetch() { }
+}";
       await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
-        $@"Targets\{nameof(FindOperationsWithNonSerializableArgumentsAnalyzerTests)}\{(nameof(this.AnalyzeWithMobileObjectAndMethodIsRootOperationWithNoArguments))}.cs",
-        Array.Empty<string>());
+        code, Array.Empty<string>());
     }
 
     [TestMethod]
     public async Task AnalyzeWithMobileObjectAndMethodIsRootOperationWithSerializableArgument()
     {
+      var code =
+@"using Csla;
+
+public class A : BusinessBase<A>
+{
+  [Fetch]
+  private void Fetch(int x) { }
+}";
       await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
-        $@"Targets\{nameof(FindOperationsWithNonSerializableArgumentsAnalyzerTests)}\{(nameof(this.AnalyzeWithMobileObjectAndMethodIsRootOperationWithSerializableArgument))}.cs",
-        Array.Empty<string>());
+        code, Array.Empty<string>());
     }
 
     [TestMethod]
     public async Task AnalyzeWithMobileObjectAndMethodIsRootOperationWithNonSerializableArgument()
     {
+      var code =
+@"using Csla;
+
+public class A { }
+
+public class B : BusinessBase<B>
+{
+  [Fetch]
+  private void Fetch(A x) { }
+}";
       await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
-        $@"Targets\{nameof(FindOperationsWithNonSerializableArgumentsAnalyzerTests)}\{(nameof(this.AnalyzeWithMobileObjectAndMethodIsRootOperationWithNonSerializableArgument))}.cs",
-        new[] { Constants.AnalyzerIdentifiers.FindOperationsWithNonSerializableArguments });
+        code, new[] { Constants.AnalyzerIdentifiers.FindOperationsWithNonSerializableArguments });
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWithMobileObjectAndMethodIsRootOperationWithNonSerializableArgumentThatIsInjectable()
+    {
+      var code =
+@"using Csla;
+
+public class A { }
+
+public class B : BusinessBase<B>
+{
+  [Fetch]
+  private void Fetch([Inject] A x) { }
+}";
+      await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
+        code, Array.Empty<string>());
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWithMobileObjectAndMethodIsRootOperationWithSerializableArgumentCustomType()
+    {
+      var code =
+@"using Csla;
+using System;
+
+[Serializable]
+public class A { }
+
+public class B : BusinessBase<B>
+{
+  [Fetch]
+  private void Fetch(A x) { }
+}
+";
+      await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
+        code, Array.Empty<string>());
     }
 
     [TestMethod]
     public async Task AnalyzeWithMobileObjectAndMethodIsChildOperationWithNoArguments()
     {
+      var code =
+@"using Csla;
+
+public class A : BusinessBase<A>
+{
+  [FetchChild]
+  private void FetchChild() { }
+}";
       await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
-        $@"Targets\{nameof(FindOperationsWithNonSerializableArgumentsAnalyzerTests)}\{(nameof(this.AnalyzeWithMobileObjectAndMethodIsChildOperationWithNoArguments))}.cs",
-        Array.Empty<string>());
+        code, Array.Empty<string>());
     }
 
     [TestMethod]
     public async Task AnalyzeWithMobileObjectAndMethodIsChildOperationWithSerializableArgument()
     {
+      var code =
+@"using Csla;
+
+public class A : BusinessBase<A>
+{
+  [FetchChild]
+  private void FetchChild(int x) { }
+}";
       await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
-        $@"Targets\{nameof(FindOperationsWithNonSerializableArgumentsAnalyzerTests)}\{(nameof(this.AnalyzeWithMobileObjectAndMethodIsChildOperationWithSerializableArgument))}.cs",
-        Array.Empty<string>());
+        code, Array.Empty<string>());
     }
 
     [TestMethod]
     public async Task AnalyzeWithMobileObjectAndMethodIsChildOperationWithNonSerializableArgument()
     {
+      var code =
+@"using Csla;
+
+public class A { }
+
+public class B : BusinessBase<B>
+{
+  [FetchChild]
+  private void FetchChild(A x) { }
+}";
       await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
-        $@"Targets\{nameof(FindOperationsWithNonSerializableArgumentsAnalyzerTests)}\{(nameof(this.AnalyzeWithMobileObjectAndMethodIsChildOperationWithNonSerializableArgument))}.cs",
-        Array.Empty<string>());
+        code, Array.Empty<string>());
     }
   }
 }

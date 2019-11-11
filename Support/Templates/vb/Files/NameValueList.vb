@@ -1,10 +1,9 @@
 Imports System
 Imports Csla
 
-<Serializable()> _
+<Serializable()>
 Public Class NameValueList
   Inherits NameValueListBase(Of Integer, String)
-#Region "Factory Methods"
 
   Private Shared _list As NameValueList
 
@@ -19,15 +18,8 @@ Public Class NameValueList
     _list = Nothing
   End Sub
 
-  ' require use of factory methods 
-  Private Sub New()
-  End Sub
-
-#End Region
-
-#Region "Data Access"
-
-  Private Overloads Sub DataPortal_Fetch()
+  <Fetch>
+  Private Sub Fetch()
     RaiseListChangedEvents = False
     IsReadOnly = False
     ' TODO: load values 
@@ -39,5 +31,4 @@ Public Class NameValueList
     RaiseListChangedEvents = True
   End Sub
 
-#End Region
 End Class

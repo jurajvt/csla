@@ -16,18 +16,9 @@ namespace Csla.Analyzers
   public sealed class IsBusinessObjectSerializableMakeSerializableCodeFix
     : CodeFixProvider
   {
-    public override ImmutableArray<string> FixableDiagnosticIds
-    {
-      get
-      {
-        return ImmutableArray.Create(Constants.AnalyzerIdentifiers.IsBusinessObjectSerializable);
-      }
-    }
+    public override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(Constants.AnalyzerIdentifiers.IsBusinessObjectSerializable);
 
-    public sealed override FixAllProvider GetFixAllProvider()
-    {
-      return WellKnownFixAllProviders.BatchFixer;
-    }
+    public sealed override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
 
     public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
@@ -40,12 +31,10 @@ namespace Csla.Analyzers
 
       context.CancellationToken.ThrowIfCancellationRequested();
 
-      IsBusinessObjectSerializableMakeSerializableCodeFix.AddCodeFix(
-        context, root, diagnostic, classNode);
+      AddCodeFix(context, root, diagnostic, classNode);
     }
 
-    private static SyntaxNode AddAttribute(SyntaxNode root, ClassDeclarationSyntax classNode,
-      string name)
+    private static SyntaxNode AddAttribute(SyntaxNode root, ClassDeclarationSyntax classNode, string name)
     {
       var attribute = SyntaxFactory.Attribute(SyntaxFactory.ParseName(name));
       var attributeList = SyntaxFactory.AttributeList(SyntaxFactory.SeparatedList<AttributeSyntax>().Add(attribute));
@@ -56,21 +45,24 @@ namespace Csla.Analyzers
     private static void AddCodeFix(CodeFixContext context, SyntaxNode root,
       Diagnostic diagnostic, ClassDeclarationSyntax classNode)
     {
-      var newRoot = IsBusinessObjectSerializableMakeSerializableCodeFix.AddAttribute(
+      var newRoot = AddAttribute(
         root, classNode, IsBusinessObjectSerializableMakeSerializableCodeFixConstants.SerializableName);
-      
+
+      var description = IsBusinessObjectSerializableMakeSerializableCodeFixConstants.AddSerializableDescription;
+
       if (!root.HasUsing(IsBusinessObjectSerializableMakeSerializableCodeFixConstants.SystemNamespace))
       {
         newRoot = (newRoot as CompilationUnitSyntax).AddUsings(
           SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(
             IsBusinessObjectSerializableMakeSerializableCodeFixConstants.SystemNamespace)));
+        description = IsBusinessObjectSerializableMakeSerializableCodeFixConstants.AddSerializableAndUsingDescription;
       }
 
       context.RegisterCodeFix(
         CodeAction.Create(
-          IsBusinessObjectSerializableMakeSerializableCodeFixConstants.AddSerializableAndUsingDescription,
+          description,
           _ => Task.FromResult(context.Document.WithSyntaxRoot(newRoot)),
-          IsBusinessObjectSerializableMakeSerializableCodeFixConstants.AddSerializableAndUsingDescription), diagnostic);
+          description), diagnostic);
     }
   }
 }

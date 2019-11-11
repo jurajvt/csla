@@ -1,11 +1,10 @@
 //-----------------------------------------------------------------------
 // <copyright file="CslaDataSourceDesigner.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Implements designer support for CslaDataSource.</summary>
 //-----------------------------------------------------------------------
-#if !CLIENTONLY
 using System;
 using System.Web.UI;
 using System.Web.UI.Design;
@@ -170,4 +169,3 @@ namespace Csla.Web.Design
     }
   }
 }
-#endif

@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="Root.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -51,12 +51,12 @@ namespace Csla.Test.DataPortalChild
 
     protected override void DataPortal_Insert()
     {
-      FieldManager.UpdateChildren();
+      FieldManager.UpdateChildren(this);
     }
 
     protected override void DataPortal_Update()
     {
-      FieldManager.UpdateChildren();
+      FieldManager.UpdateChildren(this);
     }
   }
 }

@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="MockEditableRoot.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -23,17 +23,15 @@ namespace Csla.Testing.Business.EditableRootTests
         MarkOld();
     }
 
-    #region  Properties
-
     private static PropertyInfo<Guid> IdProperty = RegisterProperty(
       typeof(MockEditableRoot), 
       new PropertyInfo<Guid>("Id"));
 
-    private static PropertyInfo<string> NameProperty = RegisterProperty(
+    private static PropertyInfo<string> NameProperty = RegisterProperty<string>(
       typeof(MockEditableRoot),
-      new PropertyInfo<string>("Name", "Name", RelationshipTypes.PrivateField));
+      new PropertyInfo<string>("Name", RelationshipTypes.PrivateField));
 
-    private static PropertyInfo<string> DataPortalMethodProperty = RegisterProperty(
+    private static PropertyInfo<string> DataPortalMethodProperty = RegisterProperty<string>(
       typeof(MockEditableRoot),
       new PropertyInfo<string>("DataPortalMethod"));
 
@@ -58,48 +56,5 @@ namespace Csla.Testing.Business.EditableRootTests
     {
       return Id.ToString();
     }
-
-    #endregion
-
-    #region  Business Rules
-
-    //protected override void AddBusinessRules()
-    //{
-    //  base.AddBusinessRules();
-    //  // TODO: add business rules
-    //}
-
-    //[System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
-    //public static void AddObjectAuthorizationRules()
-    //{
-    //  // add object-level authorization rules here
-    //}
-
-    #endregion
-
-    #region  Factory Methods
-
-    public static void CreateNew(EventHandler<DataPortalResult<MockEditableRoot>> completed)
-    {
-      Csla.DataPortal.BeginCreate<MockEditableRoot>(completed);
-    }
-
-    public static void Fetch(Guid id, EventHandler<DataPortalResult<MockEditableRoot>> completed)
-    {
-      Csla.DataPortal.BeginFetch<MockEditableRoot>(
-        new SingleCriteria<MockEditableRoot, Guid>(id),
-        completed);
-    }
-
-    public static void Delete(Guid id) { Delete(id, null); }
-    public static void Delete(Guid id, EventHandler<DataPortalResult<MockEditableRoot>> completed)
-    {
-      Csla.DataPortal.BeginDelete<MockEditableRoot>(
-        new SingleCriteria<MockEditableRoot, Guid>(id),
-        completed);
-    }
-
-    #endregion
-
   }
 }

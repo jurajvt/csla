@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="PropertyInfoRoot.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Note: We exposed the PropertyInfo's so we can test it...</summary>
 //-----------------------------------------------------------------------
@@ -33,7 +33,7 @@ namespace Csla.Test.PropertyInfo
 
     #region DataPortal Methods
 
-    private void DataPortal_Create()
+    protected override void DataPortal_Create()
     {
     }
 
@@ -74,12 +74,20 @@ namespace Csla.Test.PropertyInfo
       set { SetProperty(_nameFriendlyNameProperty, value); }
     }
 
-    public static readonly PropertyInfo<System.String> _nameDefaultValueProperty = RegisterProperty<System.String>(p => p.NameDefaultValue, "", null);
-    public System.String NameDefaultValue
+    public static readonly PropertyInfo<string> NameDefaultValueProperty = RegisterProperty<string>(c => c.NameDefaultValue, string.Empty, "x");
+    public string NameDefaultValue
     {
-      get { return GetProperty(_nameDefaultValueProperty); }
-      set { SetProperty(_nameDefaultValueProperty, value); }
+      get { return GetProperty(NameDefaultValueProperty); }
+      set { SetProperty(NameDefaultValueProperty, value); }
     }
+    
+    public static readonly PropertyInfo<string> StringNullDefaultValueProperty = RegisterProperty<string>(c => c.StringNullDefaultValue, string.Empty, null);
+    public string StringNullDefaultValue
+    {
+      get { return GetProperty(StringNullDefaultValueProperty); }
+      set { SetProperty(StringNullDefaultValueProperty, value); }
+    }
+
 
     #endregion
   }

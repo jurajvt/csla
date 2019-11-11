@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="SingleChild.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -26,14 +26,14 @@ namespace Csla.Test.ChildChanged
         MarkAsChild();
     }
 
-    private static PropertyInfo<string> NameProperty = RegisterProperty(new PropertyInfo<string>("Name", "Name"));
+    private static PropertyInfo<string> NameProperty = RegisterProperty(new PropertyInfo<string>("Name"));
     public string Name
     {
       get { return GetProperty(NameProperty); }
       set { SetProperty(NameProperty, value); }
     }
 
-    private static PropertyInfo<SingleRoot> ChildProperty = RegisterProperty(new PropertyInfo<SingleRoot>("Child", "Child"));
+    private static PropertyInfo<SingleRoot> ChildProperty = RegisterProperty(new PropertyInfo<SingleRoot>("Child"));
     public SingleRoot Child
     {
       get 

@@ -1,8 +1,8 @@
-﻿#if !NETSTANDARD && !NETSTANDARD2_0
+﻿#if !NETSTANDARD && !NETSTANDARD2_0 && !NETCORE3_0 && !NETCORE3_1
 //-----------------------------------------------------------------------
 // <copyright file="ViewModelBase.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Base class used to create ViewModel objects that contain the Model object and related elements.</summary>
 //-----------------------------------------------------------------------

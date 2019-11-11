@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="DpRoot.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -63,21 +63,7 @@ namespace Csla.Test.DataPortal
     #endregion
 
     #region "New root + constructor"
-#if SILVERLIGHT
-        public static DpRoot NewRoot()
-        {
-          DpRoot returnValue = new DpRoot();
-          returnValue.Data = new Criteria()._data;
-          return returnValue;
-        }
-        public static DpRoot GetRoot(string data)
-        {
-          DpRoot returnValue = new DpRoot();
-          returnValue.Data = new Criteria()._data;
-          returnValue.MarkOld();
-          return returnValue;
-        }
-#else
+
     public static DpRoot NewRoot()
     {
       Criteria crit = new Criteria();
@@ -88,7 +74,6 @@ namespace Csla.Test.DataPortal
     {
       return (Csla.DataPortal.Fetch<DpRoot>(new Criteria(data)));
     }
-#endif
 
 
     #endregion
@@ -100,8 +85,6 @@ namespace Csla.Test.DataPortal
 
 
     #region "DataPortal"
-
-#if !SILVERLIGHT
 
     private void DataPortal_Create(object criteria)
     {
@@ -147,8 +130,6 @@ namespace Csla.Test.DataPortal
     {
       Csla.ApplicationContext.GlobalContext["serverinvokecomplete"] = true;
     }
-
-#endif
 
     #endregion
 

@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="AsyncRuleTests.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>This only works on Silverlight because when run through NUnit it is not running</summary>
 //-----------------------------------------------------------------------
@@ -12,6 +12,7 @@ using System.Text;
 using System.Windows.Threading;
 using System.Threading;
 using UnitDriven;
+using System.Threading.Tasks;
 
 #if NUNIT
 using NUnit.Framework;
@@ -139,34 +140,20 @@ namespace Csla.Test.ValidationRules
 
       context.Complete();
     }
-#if SILVERLIGHT
-    /// <summary>
-    /// This only works on Silverlight because when run through NUnit it is not running
-    /// in the UI thread, thus the Dispatcher will not behave as expected. I'm not sure how to 
-    /// simulate the UI thread in NUnit but maybe we can assume it will work since this is the
-    /// expected behavior of BackgroundWorker and this test passes in Silverlight. Developers
-    /// will be responsible for Dispatching back to the UI thread by either getting the current
-    /// thread dispatcher or using a BackgroundWorker or, in silverlight, making a WCF service
-    /// call will do this automatically.
-    /// </summary>
+
     [TestMethod]
-    public void AsyncCompleteVerifyUIThread()
+    public async Task TestAsyncAwaitRule()
     {
-      UnitTestContext context = GetContext();
-      Thread expected = Thread.CurrentThread;
-
-      HasAsyncRule har = new HasAsyncRule();
-      context.Assert.IsTrue(har.IsValid, "IsValid 1");
-
+      var har = new AsyncRuleRoot();
+      var tcs = new TaskCompletionSource<bool>();
       har.ValidationComplete += (o, e) =>
       {
-        Thread actual = Thread.CurrentThread;
-        context.Assert.AreSame(expected, actual);
-        context.Assert.Success();
+        Assert.AreEqual("abc", har.AsyncAwait, "ends with value");
+        tcs.SetResult(true);
       };
-      har.Name = "success";
-      context.Complete();
+      har.AsyncAwait = "123456";
+      await tcs.Task;
     }
-#endif
+
   }
 }

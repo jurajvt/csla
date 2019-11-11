@@ -2,7 +2,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="InvokeMethod.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Invokes a method on a target object when a </summary>
 //-----------------------------------------------------------------------
@@ -152,18 +152,6 @@ namespace Csla.Xaml
     /// <param name="ctrl">Attached control</param>
     public static object GetMethodParameter(UIElement ctrl)
     {
-#if SILVERLIGHT
-      var fe = ctrl as FrameworkElement;
-      if (fe != null)
-      {
-        var be = fe.GetBindingExpression(MethodParameterProperty);
-        if (be != null && be.ParentBinding != null)
-        {
-          var newBinding = CopyBinding(be.ParentBinding);
-          fe.SetBinding(MethodParameterProperty, newBinding);
-        }
-      }
-#endif
       return ctrl.GetValue(MethodParameterProperty);
     }
 

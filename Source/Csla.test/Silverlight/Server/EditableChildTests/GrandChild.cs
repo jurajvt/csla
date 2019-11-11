@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="GrandChild.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -60,11 +60,9 @@ namespace Csla.Testing.Business.EditableChildTests
 
     #endregion
 
-#if !SILVERLIGHT
     protected override void DataPortal_Update()
     {
       LoadProperty<string>(DataPortalMethodProperty, "DataPortal_Update");
     }
-#endif
   }
 }

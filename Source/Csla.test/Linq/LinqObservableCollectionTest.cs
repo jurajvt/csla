@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="LinqObservableCollectionTest.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -347,7 +347,6 @@ namespace Csla.Test.Linq
       Assert.AreEqual("r", obj[0]);
     }
 
-#if !SILVERLIGHT
     [TestMethod]
     public void MoveItem()
     {
@@ -376,7 +375,6 @@ namespace Csla.Test.Linq
       Assert.AreEqual("b", source[2]);
       Assert.AreEqual("c", source[1]);
     }
-#endif
 
     [TestMethod]
     public void ClearSource()
@@ -462,7 +460,7 @@ namespace Csla.Test.Linq
       set { SetProperty(NameProperty, value); }
     }
 
-    public void Child_Fetch(int id, string name)
+    private void Child_Fetch(int id, string name)
     {
       using (BypassPropertyChecks)
       {

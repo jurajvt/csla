@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="HasInvalidAsyncRule.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -52,7 +52,7 @@ namespace Csla.Test.ValidationRules
         InputProperties = new List<Core.IPropertyInfo> { primaryProperty };
       }
 
-      protected override void Execute(RuleContext context)
+      protected override void Execute(IRuleContext context)
       {
         var bw = new System.ComponentModel.BackgroundWorker();
         bw.DoWork += (o, e) =>

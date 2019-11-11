@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="ApplicationContextManager.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Application context manager that uses HttpContext</summary>
 //-----------------------------------------------------------------------
@@ -11,6 +11,9 @@ using System.Linq;
 using System.Text;
 using Csla.Core;
 using System.Web;
+#if !NET40 && !NET45
+using Microsoft.Extensions.DependencyInjection;
+#endif
 
 namespace Csla.Web
 {
@@ -39,7 +42,13 @@ namespace Csla.Web
     /// </summary>
     public System.Security.Principal.IPrincipal GetUser()
     {
-      return HttpContext.Current.User;
+      var result = HttpContext.Current.User;
+      if (result == null)
+      {
+        result = new Csla.Security.UnauthenticatedPrincipal();
+        SetUser(result);
+      }
+      return result;
     }
 
     /// <summary>
@@ -101,5 +110,46 @@ namespace Csla.Web
     {
       HttpContext.Current.Items[_globalContextName] = globalContext;
     }
+
+    /// <summary>
+    /// Gets the default IServiceProvider
+    /// </summary>
+    public IServiceProvider GetDefaultServiceProvider()
+    {
+      IServiceProvider result;
+      result = (IServiceProvider)Csla.ApplicationContext.LocalContext["__dsp"];
+      if (result == null)
+        result = GetDefaultServiceProvider();
+      return result;
+    }
+
+    /// <summary>
+    /// Sets the default IServiceProvider
+    /// </summary>
+    /// <param name="serviceProvider">IServiceProvider instance</param>
+    public void SetDefaultServiceProvider(IServiceProvider serviceProvider)
+    {
+      Csla.ApplicationContext.LocalContext["__dsp"] = serviceProvider;
+    }
+
+#if !NET40 && !NET45
+    /// <summary>
+    /// Gets the service provider scope
+    /// </summary>
+    /// <returns></returns>
+    public IServiceScope GetServiceProviderScope()
+    {
+      return (IServiceScope)ApplicationContext.LocalContext["__sps"];
+    }
+
+    /// <summary>
+    /// Sets the service provider scope
+    /// </summary>
+    /// <param name="scope">IServiceScope instance</param>
+    public void SetServiceProviderScope(IServiceScope scope)
+    {
+      Csla.ApplicationContext.LocalContext["__sps"] = scope;
+    }
+#endif
   }
 }

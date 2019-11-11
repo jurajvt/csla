@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="CustomerWithEnum.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Implementation of a test business object with an enum.</summary>
 //-----------------------------------------------------------------------
@@ -49,7 +49,7 @@ namespace cslalighttest.Serialization
       set { SetProperty(Property_Name, value); }
     }
 
-    private static PropertyInfo<CustomerQuality> Property_Quality = RegisterProperty(new PropertyInfo<CustomerQuality>("Quality", "Quality"));
+    private static PropertyInfo<CustomerQuality> Property_Quality = RegisterProperty<CustomerQuality>(c => c.Quality, "Quality");
 
     /// <summary>
     /// Gets or sets the quality of the customer.

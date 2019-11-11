@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="CslaDataSourceConfiguration.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>CslaDataSource configuration form.</summary>
 //-----------------------------------------------------------------------
@@ -18,7 +18,6 @@ namespace Csla.Web.Design
   /// </summary>
   public partial class CslaDataSourceConfiguration : Form
   {
-#if !CLIENTONLY
     private DataSourceControl _control;
 
     /// <summary>
@@ -88,6 +87,5 @@ namespace Csla.Web.Design
         }
       }
     }
-#endif
   }
 }

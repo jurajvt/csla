@@ -8,21 +8,9 @@ namespace cslalighttest.ViewModelTests
   public class TestBindingList :
     BusinessListBase<TestBindingList, TestChild>
   {
-    #region Factory Methods
-
-    public static void NewEditableList(EventHandler<DataPortalResult<TestBindingList>> callback)
-    {
-      var portal = new Csla.DataPortal<TestBindingList>();
-      portal.CreateCompleted += callback;
-      portal.BeginCreate();
-    }
-
     public TestBindingList()
     { }
 
-    #endregion
-
-#if !SILVERLIGHT
     public static TestBindingList NewEditableList()
     {
       return DataPortal.Create<TestBindingList>();
@@ -38,6 +26,5 @@ namespace cslalighttest.ViewModelTests
     }
 
     #endregion
-#endif
   }
 }

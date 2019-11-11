@@ -24,11 +24,11 @@ Public Class BusinessRuleClass
     ' IsAsync = True
   End Sub
 
-  Protected Overrides Sub Execute(ByVal context As RuleContext)
+  Protected Overrides Sub Execute(ByVal context As IRuleContext)
     ' TODO: Asyncronous rules 
     ' If rule is async make sure that ALL excution paths call context.Complete
 
-
+    Dim brokencondition As Boolean
     ' TODO: Add actual rule code here. 
     If brokencondition Then
       context.AddErrorResult("Broken rule message")

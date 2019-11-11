@@ -7,7 +7,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,21 +26,18 @@ namespace Csla.Analyzers.Tests
       var newTree = await newDoc.GetSyntaxTreeAsync();
       var changes = newTree.GetChanges(tree);
 
-      Assert.AreEqual(expectedNewTexts.Length, changes.Count, nameof(changes.Count));
-
       foreach(var expectedNewText in expectedNewTexts)
       {
-        Assert.IsTrue(changes.Any(_ => _.NewText == expectedNewText), 
+        Assert.IsTrue(changes.Any(_ => _.NewText.Contains(expectedNewText)), 
           string.Join($"{Environment.NewLine}{Environment.NewLine}", changes.Select(_ => $"Change text: {_.NewText}")));
       }
     }
 
-    internal static async Task RunAnalysisAsync<T>(string path, string[] diagnosticIds,
+    internal static async Task RunAnalysisAsync<T>(string code, string[] diagnosticIds,
       Action<List<Diagnostic>> diagnosticInspector = null)
       where T : DiagnosticAnalyzer, new()
     {
-      var code = File.ReadAllText(path);
-      var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new T());
+      var diagnostics = await GetDiagnosticsAsync(code, new T());
       Assert.AreEqual(diagnosticIds.Length, diagnostics.Count, nameof(diagnostics.Count));
 
       foreach (var diagnosticId in diagnosticIds)
@@ -54,8 +50,7 @@ namespace Csla.Analyzers.Tests
 
     internal static async Task<List<Diagnostic>> GetDiagnosticsAsync(string code, DiagnosticAnalyzer analyzer)
     {
-      var document = TestHelpers.Create(code);
-      var root = await document.GetSyntaxRootAsync();
+      var document = Create(code);
       var compilation = (await document.Project.GetCompilationAsync())
         .WithAnalyzers(ImmutableArray.Create(analyzer));
       return (await compilation.GetAnalyzerDiagnosticsAsync()).ToList();
@@ -67,14 +62,19 @@ namespace Csla.Analyzers.Tests
       var projectId = ProjectId.CreateNewId(projectName);
 
       var solution = new AdhocWorkspace()
-         .CurrentSolution
-         .AddProject(projectId, projectName, projectName, LanguageNames.CSharp)
-         .WithProjectCompilationOptions(projectId, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
-         .AddMetadataReference(projectId, MetadataReference.CreateFromFile(typeof(object).Assembly.Location))
-         .AddMetadataReference(projectId, MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location))
-         .AddMetadataReference(projectId, MetadataReference.CreateFromFile(typeof(CSharpCompilation).Assembly.Location))
-         .AddMetadataReference(projectId, MetadataReference.CreateFromFile(typeof(Compilation).Assembly.Location))
-         .AddMetadataReference(projectId, MetadataReference.CreateFromFile(typeof(BusinessBase<>).Assembly.Location));
+        .CurrentSolution
+        .AddProject(projectId, projectName, projectName, LanguageNames.CSharp)
+        .WithProjectCompilationOptions(projectId, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
+        .AddMetadataReferences(projectId, AssemblyReferences.GetMetadataReferences(new[]
+          {
+              typeof(object).Assembly,
+              typeof(Enumerable).Assembly,
+              typeof(CSharpCompilation).Assembly,
+              typeof(Compilation).Assembly,
+              typeof(Attribute).Assembly,
+              typeof(Task<>).Assembly,
+              typeof(BusinessBase<>).Assembly
+          }));
 
       var documentId = DocumentId.CreateNewId(projectId);
       solution = solution.AddDocument(documentId, "Test.cs", SourceText.From(code));

@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="AbstractGetSet.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -15,14 +15,16 @@ namespace Csla.Test.Silverlight.PropertyGetSet
   [Serializable]
   public class AbstractGetSet<T> : BusinessBase<T> where T : AbstractGetSet<T>
   {
-    protected static PropertyInfo<int> IdProperty = RegisterProperty<int>(new PropertyInfo<int>("Id", "Id"));
+    protected static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id, "Id");
     public int Id
     {
       get { return GetProperty<int>(IdProperty); }
       set { SetProperty<int>(IdProperty, value); }
     }
 
+#pragma warning disable CS0414
     private static int _forceLoad;
+#pragma warning restore CS0414
 
     protected AbstractGetSet()
     {

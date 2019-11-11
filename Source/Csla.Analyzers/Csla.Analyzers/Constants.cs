@@ -14,6 +14,11 @@
       public const string EvaluateManagedBackingFields = "CSLA0008";
       public const string IsOperationMethodPublicForInterface = "CSLA0009";
       public const string FindOperationsWithNonSerializableArguments = "CSLA0010";
+      public const string FindBusinessObjectCreation = "CSLA0011";
+      public const string FindOperationsWithIncorrectReturnTypes = "CSLA0012";
+      public const string DoesChildOperationHaveRunLocal = "CSLA0013";
+      public const string DoesOperationHaveAttribute = "CSLA0014";
+      public const string IsOperationAttributeUsageCorrect = "CSLA0015";
     }
 
     public static class Categories

@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="RuleDescriptionTests.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -112,7 +112,7 @@ namespace Csla.Test.ValidationRules
 
   public class MyRule : Rules.BusinessRule
   {
-    protected override void Execute(Rules.RuleContext context)
+    protected override void Execute(Rules.IRuleContext context)
     {
       base.Execute(context);
     }

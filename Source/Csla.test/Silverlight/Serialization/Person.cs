@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="Person.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -71,7 +71,7 @@ namespace cslalighttest.Serialization
       return GetProperty<DateTime>(BirthdateProperty);
     }
 
-    private static PropertyInfo<DateTimeOffset> DtoDateProperty = RegisterProperty(new PropertyInfo<DateTimeOffset>("DtoDate", "DateTimeOffset date"));
+    private static PropertyInfo<DateTimeOffset> DtoDateProperty = RegisterProperty<DateTimeOffset>(c => c.DtoDate, "DateTimeOffset date");
     public DateTimeOffset DtoDate
     {
       get { return GetProperty(DtoDateProperty); }

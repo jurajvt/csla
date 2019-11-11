@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------
 // <copyright file="AuthTests.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -51,7 +51,9 @@ namespace Csla.Test.Authorization
     {
       ApplicationContext.GlobalContext.Clear();
 
+#pragma warning disable CS0436 // Type conflicts with imported type
       Security.TestPrincipal.SimulateLogin();
+#pragma warning restore CS0436 // Type conflicts with imported type
 
       Assert.AreEqual(true, Csla.ApplicationContext.User.IsInRole("Admin"));
 
@@ -122,7 +124,9 @@ namespace Csla.Test.Authorization
 
       #endregion
 
+#pragma warning disable CS0436 // Type conflicts with imported type
       Security.TestPrincipal.SimulateLogout();
+#pragma warning restore CS0436 // Type conflicts with imported type
     }
 
     [TestMethod()]
@@ -130,13 +134,11 @@ namespace Csla.Test.Authorization
     {
       ApplicationContext.GlobalContext.Clear();
 
+#pragma warning disable CS0436 // Type conflicts with imported type
       Security.TestPrincipal.SimulateLogin();
+#pragma warning restore CS0436 // Type conflicts with imported type
 
-#if SILVERLIGHT
-      Assert.AreEqual(true, Csla.ApplicationContext.User.IsInRole("Admin"));
-#else
             Assert.AreEqual(true, System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
-#endif
 
       root.Data = "Something new";
 
@@ -242,7 +244,9 @@ namespace Csla.Test.Authorization
 
       #endregion
 
+#pragma warning disable CS0436 // Type conflicts with imported type
       Security.TestPrincipal.SimulateLogout();
+#pragma warning restore CS0436 // Type conflicts with imported type
     }
 
     [TestMethod()]
@@ -251,18 +255,26 @@ namespace Csla.Test.Authorization
       Csla.ApplicationContext.GlobalContext.Clear();
       Csla.Test.Security.PermissionsRoot pr = Csla.Test.Security.PermissionsRoot.NewPermissionsRoot();
 
+#pragma warning disable CS0436 // Type conflicts with imported type
       Csla.Test.Security.TestPrincipal.SimulateLogin();
+#pragma warning restore CS0436 // Type conflicts with imported type
       pr.FirstName = "something";
 
       pr.BeginEdit();
       pr.FirstName = "ba";
       pr.CancelEdit();
+#pragma warning disable CS0436 // Type conflicts with imported type
       Csla.Test.Security.TestPrincipal.SimulateLogout();
+#pragma warning restore CS0436 // Type conflicts with imported type
 
       Csla.Test.Security.PermissionsRoot prClone = pr.Clone();
+#pragma warning disable CS0436 // Type conflicts with imported type
       Csla.Test.Security.TestPrincipal.SimulateLogin();
+#pragma warning restore CS0436 // Type conflicts with imported type
       prClone.FirstName = "somethiansdfasdf";
+#pragma warning disable CS0436 // Type conflicts with imported type
       Csla.Test.Security.TestPrincipal.SimulateLogout();
+#pragma warning restore CS0436 // Type conflicts with imported type
     }
 
     [ExpectedException(typeof(Csla.Security.SecurityException))]
@@ -291,51 +303,43 @@ namespace Csla.Test.Authorization
     public void TestAuthorizedAccess()
     {
       Csla.ApplicationContext.GlobalContext.Clear();
+#pragma warning disable CS0436 // Type conflicts with imported type
       Csla.Test.Security.TestPrincipal.SimulateLogin();
+#pragma warning restore CS0436 // Type conflicts with imported type
 
       PermissionsRoot pr = PermissionsRoot.NewPermissionsRoot();
       //should work, because we are now logged in as an admin
       pr.FirstName = "something";
       string something = pr.FirstName;
 
-#if SILVERLIGHT
-      Assert.AreEqual(true, Csla.ApplicationContext.User.IsInRole("Admin"));
-#else
             Assert.AreEqual(true, System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
-#endif
       //set to null so the other testmethods continue to throw exceptions
+#pragma warning disable CS0436 // Type conflicts with imported type
       Csla.Test.Security.TestPrincipal.SimulateLogout();
+#pragma warning restore CS0436 // Type conflicts with imported type
 
-#if SILVERLIGHT
-      Assert.AreEqual(false, Csla.ApplicationContext.User.IsInRole("Admin"));
-#else
             Assert.AreEqual(false, System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
-#endif
     }
 
     [TestMethod]
     public void TestAuthExecute()
     {
       Csla.ApplicationContext.GlobalContext.Clear();
+#pragma warning disable CS0436 // Type conflicts with imported type
       Csla.Test.Security.TestPrincipal.SimulateLogin();
+#pragma warning restore CS0436 // Type conflicts with imported type
 
       PermissionsRoot pr = PermissionsRoot.NewPermissionsRoot();
       //should work, because we are now logged in as an admin
       pr.DoWork();
 
-#if SILVERLIGHT
-      Assert.AreEqual(true, Csla.ApplicationContext.User.IsInRole("Admin"));
-#else
           Assert.AreEqual(true, System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
-#endif
       //set to null so the other testmethods continue to throw exceptions
+#pragma warning disable CS0436 // Type conflicts with imported type
       Csla.Test.Security.TestPrincipal.SimulateLogout();
+#pragma warning restore CS0436 // Type conflicts with imported type
 
-#if SILVERLIGHT
-      Assert.AreEqual(false, Csla.ApplicationContext.User.IsInRole("Admin"));
-#else
           Assert.AreEqual(false, System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
-#endif
     }
 
     [TestMethod]
@@ -352,41 +356,16 @@ namespace Csla.Test.Authorization
 
     }
 
-    //[TestMethod()]
-    //public void TestAuthorizationAfterClone()
-    //{
-    //    Csla.ApplicationContext.GlobalContext.Clear();
-    //    Csla.Test.Security.TestPrincipal.SimulateLogin();
-
-    //    PermissionsRoot pr = PermissionsRoot.NewPermissionsRoot();
-
-    //    //should work because we are now logged in as an admin
-    //    pr.FirstName = "something";
-    //    string something = pr.FirstName;
-
-    //    //The permissions should persist across a cloning
-    //    PermissionsRoot prClone = pr.Clone();
-    //    pr.FirstName = "something";
-    //    something = pr.FirstName;
-    //}
-
     [TestMethod]
     public void TestAuthRuleSetsOnStaticHasPermissionMethodsWhenAddingAuthzRuleSetExplicitly()
     {
       var root = PermissionsRoot.NewPermissionsRoot();
+#pragma warning disable CS0436 // Type conflicts with imported type
       Csla.Test.Security.TestPrincipal.SimulateLogin();
+#pragma warning restore CS0436 // Type conflicts with imported type
 
-#if SILVERLIGHT
-      Assert.IsTrue(Csla.ApplicationContext.User.IsInRole("Admin"));
-      Assert.IsFalse(Csla.ApplicationContext.User.IsInRole("User"));
-#else
-          Assert.IsTrue(System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
-          Assert.IsFalse(System.Threading.Thread.CurrentPrincipal.IsInRole("User"));
-#endif
-
-      //BusinessRules.AddRule(typeof(PermissionsRoot), new IsInRole(AuthorizationActions.DeleteObject, "User"), ApplicationContext.DefaultRuleSet);
-      //BusinessRules.AddRule(typeof(PermissionsRoot), new IsInRole(AuthorizationActions.DeleteObject, "Admin"), "custom1");
-      //BusinessRules.AddRule(typeof(PermissionsRoot), new IsInRole(AuthorizationActions.DeleteObject, "User", "Admin"), "custom2");
+      Assert.IsTrue(System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
+      Assert.IsFalse(System.Threading.Thread.CurrentPrincipal.IsInRole("User"));
 
       // implicit usage of ApplicationContext.RuleSet
       ApplicationContext.RuleSet = ApplicationContext.DefaultRuleSet;
@@ -403,22 +382,21 @@ namespace Csla.Test.Authorization
       Assert.IsTrue(BusinessRules.HasPermission(AuthorizationActions.DeleteObject, typeof(PermissionsRoot), "custom1"));
       Assert.IsTrue(BusinessRules.HasPermission(AuthorizationActions.DeleteObject, typeof(PermissionsRoot), "custom2"));
 
+#pragma warning disable CS0436 // Type conflicts with imported type
       Csla.Test.Security.TestPrincipal.SimulateLogout();
+#pragma warning restore CS0436 // Type conflicts with imported type
     }
 
     [TestMethod]
     public void TestAuthRuleSetsOnStaticHasPermissionMethodsWhenAddingAuthzRuleSetUsingApplicationContextRuleSet()
     {
       var root = PermissionsRoot2.NewPermissionsRoot();
+#pragma warning disable CS0436 // Type conflicts with imported type
       Csla.Test.Security.TestPrincipal.SimulateLogin();
+#pragma warning restore CS0436 // Type conflicts with imported type
 
-#if SILVERLIGHT
-      Assert.IsTrue(Csla.ApplicationContext.User.IsInRole("Admin"));
-      Assert.IsFalse(Csla.ApplicationContext.User.IsInRole("User"));
-#else
-          Assert.IsTrue(System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
-          Assert.IsFalse(System.Threading.Thread.CurrentPrincipal.IsInRole("User"));
-#endif
+      Assert.IsTrue(System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
+      Assert.IsFalse(System.Threading.Thread.CurrentPrincipal.IsInRole("User"));
 
       //BusinessRules.AddRule(typeof(PermissionsRoot), new IsInRole(AuthorizationActions.DeleteObject, "User"), ApplicationContext.DefaultRuleSet);
       //BusinessRules.AddRule(typeof(PermissionsRoot), new IsInRole(AuthorizationActions.DeleteObject, "Admin"), "custom1");
@@ -439,7 +417,9 @@ namespace Csla.Test.Authorization
       Assert.IsTrue(BusinessRules.HasPermission(AuthorizationActions.DeleteObject, typeof(PermissionsRoot2), "custom1"));
       Assert.IsTrue(BusinessRules.HasPermission(AuthorizationActions.DeleteObject, typeof(PermissionsRoot2), "custom2"));
 
+#pragma warning disable CS0436 // Type conflicts with imported type
       Csla.Test.Security.TestPrincipal.SimulateLogout();
+#pragma warning restore CS0436 // Type conflicts with imported type
     }
 
     [TestMethod]
@@ -456,21 +436,8 @@ namespace Csla.Test.Authorization
       }
       catch (Exception ex)
       {
-#if !SILVERLIGHT
         Assert.IsInstanceOfType(ex, typeof(TargetInvocationException));
         Assert.IsInstanceOfType(ex.InnerException, typeof(ArgumentException));
-#else
-        using (IsolatedStorageFile isf = IsolatedStorageFile.GetUserStoreForApplication())
-        {
-          using (IsolatedStorageFileStream isfs = new IsolatedStorageFileStream("sl_testauth.txt", FileMode.OpenOrCreate, isf)) 
-          { using (StreamWriter sw = new StreamWriter(isfs)) 
-          { 
-            sw.Write(ex.ToString()); 
-            sw.Close(); } }
-        }
-        Assert.IsInstanceOfType(typeof(TargetInvocationException), ex);
-        Assert.IsInstanceOfType(typeof(ArgumentException), ex.InnerException);
-#endif
       }
 
       // AddObjectAuthorizations should be called again and
@@ -481,13 +448,8 @@ namespace Csla.Test.Authorization
       }
       catch (Exception ex)
       {
-#if !SILVERLIGHT
         Assert.IsInstanceOfType(ex, typeof(TargetInvocationException));
         Assert.IsInstanceOfType(ex.InnerException, typeof(ArgumentException));
-#else
-        Assert.IsInstanceOfType(typeof(TargetInvocationException), ex);
-        Assert.IsInstanceOfType(typeof(ArgumentException), ex.InnerException);
-#endif
       }
 
       Assert.IsTrue(RootException.Counter == 2);
@@ -498,6 +460,141 @@ namespace Csla.Test.Authorization
     {
       var root = new RootList();
       root.RemoveAt(0);
+    }
+
+    [TestMethod]
+    public void PerTypeAuthEditObject()
+    {
+      ApplicationContext.DataPortalActivator = new PerTypeAuthDPActivator();
+      try
+      {
+        Assert.IsFalse(BusinessRules.HasPermission(AuthorizationActions.EditObject, typeof(PerTypeAuthRoot)));
+      }
+      finally
+      {
+        Csla.ApplicationContext.DataPortalActivator = null;
+      }
+    }
+
+    [TestMethod]
+    public void PerTypeAuthEditObjectViaInterface()
+    {
+      ApplicationContext.DataPortalActivator = new PerTypeAuthDPActivator();
+      try
+      {
+        Assert.IsFalse(BusinessRules.HasPermission(AuthorizationActions.EditObject, typeof(IPerTypeAuthRoot)));
+      }
+      finally
+      {
+        Csla.ApplicationContext.DataPortalActivator = null;
+      }
+    }
+
+    [TestMethod]
+    public void PerTypeAuthCreateWithCriteria() {
+      Assert.IsTrue(
+        BusinessRules.HasPermission(
+          AuthorizationActions.CreateObject,
+          typeof(PermissionRootWithCriteria),
+          new object[] { new PermissionRootWithCriteria.Criteria() }));
+
+      Assert.IsFalse(
+        BusinessRules.HasPermission(
+          AuthorizationActions.CreateObject,
+          typeof(PermissionRootWithCriteria),
+          new[] { new object() }));
+
+    
+      Assert.IsFalse(
+        BusinessRules.HasPermission(
+          AuthorizationActions.CreateObject,
+          typeof(PermissionRootWithCriteria),
+          (object[])null));
+    }
+
+    [TestMethod]
+    public void PerTypeAuthFetchWithCriteria() 
+    {
+      Assert.IsTrue(
+        BusinessRules.HasPermission(
+          AuthorizationActions.GetObject,
+          typeof(PermissionRootWithCriteria),
+          new object[] { new PermissionRootWithCriteria.Criteria() }));
+
+      Assert.IsFalse(
+        BusinessRules.HasPermission(
+          AuthorizationActions.GetObject,
+          typeof(PermissionRootWithCriteria),
+          new[] { new object() }));
+
+    
+      Assert.IsFalse(
+        BusinessRules.HasPermission(
+          AuthorizationActions.GetObject,
+          typeof(PermissionRootWithCriteria),
+          (object[])null));
+    }
+  
+    [TestMethod]
+    public void PerTypeAuthDeleteWithCriteria() 
+    {
+      Assert.IsTrue(
+        BusinessRules.HasPermission(
+          AuthorizationActions.DeleteObject,
+          typeof(PermissionRootWithCriteria),
+          new object[] { new PermissionRootWithCriteria.Criteria() }));
+
+      Assert.IsFalse(
+        BusinessRules.HasPermission(
+          AuthorizationActions.DeleteObject,
+          typeof(PermissionRootWithCriteria),
+          new[] { new object() }));
+
+    
+      Assert.IsFalse(
+        BusinessRules.HasPermission(
+          AuthorizationActions.DeleteObject,
+          typeof(PermissionRootWithCriteria),
+          (object[])null));
+    }
+  }
+
+  public class PerTypeAuthDPActivator : Server.IDataPortalActivator
+  {
+    public object CreateInstance(Type requestedType)
+    {
+      return Activator.CreateInstance(ResolveType(requestedType));
+    }
+
+    public void FinalizeInstance(object obj)
+    {
+    }
+
+    public void InitializeInstance(object obj)
+    {
+    }
+
+    public Type ResolveType(Type requestedType)
+    {
+      if (requestedType.Equals(typeof(IPerTypeAuthRoot)))
+        return typeof(PerTypeAuthRoot);
+      else
+        return requestedType;
+    }
+  }
+
+  public interface IPerTypeAuthRoot
+  { }
+
+  [Serializable]
+  public class PerTypeAuthRoot : BusinessBase<PerTypeAuthRoot>, IPerTypeAuthRoot
+  {
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+    public static void AddObjectAuthorizationRules()
+    {
+      Csla.Rules.BusinessRules.AddRule(
+        typeof(PerTypeAuthRoot), 
+        new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.EditObject, "Test"));
     }
   }
 
@@ -528,7 +625,7 @@ namespace Csla.Test.Authorization
         : base(action)
       {}
 
-      protected override void Execute(AuthorizationContext context)
+      protected override void Execute(IAuthorizationContext context)
       {
         context.HasPermission = false;
       }

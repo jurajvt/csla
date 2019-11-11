@@ -27,24 +27,17 @@ namespace ProjectTracker.Library
       private set { LoadProperty(ResourceCountProperty, value); }
     }
 
-
-    public static void GetDashboard(
-      EventHandler<DataPortalResult<Dashboard>> callback)
-    {
-      DataPortal.BeginFetch<Dashboard>(callback);
-    }
-#if !WINDOWS_PHONE
     public async static System.Threading.Tasks.Task<Dashboard> GetDashboardAsync()
     {
       return await DataPortal.FetchAsync<Dashboard>();
     }
-#endif
-#if FULL_DOTNET
+
     public static Dashboard GetDashboard()
     {
       return DataPortal.Fetch<Dashboard>();
     }
 
+    [Fetch]
     private void DataPortal_Fetch()
     {
       using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
@@ -56,6 +49,5 @@ namespace ProjectTracker.Library
         ResourceCount = data.ResourceCount;
       }
     }
-#endif
   }
 }

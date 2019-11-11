@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="SilverlightPrincipal.server.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -23,7 +23,7 @@ namespace Csla.Testing.Business.Security
       var identity = SilverlightIdentity.UnauthenticatedIdentity();
       SetPrincipal(identity);
     }
-#if !CLIENTONLY
+
     public static void LoginUsingMembershipProviderDataPortal(string name, string password)
     {
       var identity = MembershipIdentity.GetMembershipIdentity<SilverlightMembershipIdentity>(name, password);
@@ -35,6 +35,5 @@ namespace Csla.Testing.Business.Security
       SilverlightMembershipIdentity identity = MembershipIdentity.GetMembershipIdentity<SilverlightMembershipIdentity>(name, password);
       SetPrincipal(identity);
     }
-#endif
   }
 }

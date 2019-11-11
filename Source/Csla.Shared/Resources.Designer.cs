@@ -1120,6 +1120,17 @@ namespace Csla.Properties
     /// <summary>
     ///   Looks up a localized string similar to Update method name not specified in MobileFactory attribute.
     /// </summary>
+    public static string UnableToLoadDataPortalProxyFactory
+    {
+      get
+      {
+        return GetResourceString();
+      }
+    }
+
+    /// <summary>
+    ///   Looks up a localized string similar to Update method name not specified in MobileFactory attribute.
+    /// </summary>
     public static string UpdateMethodNameNotSpecified
     {
       get
@@ -1231,6 +1242,38 @@ namespace Csla.Properties
     /// Looks up a localized string.
     /// </summary>
     public static string AsyncMethodOnSyncClientNotAllowed
+    {
+      get
+      {
+        return GetResourceString();
+      }
+    }
+
+    /// <summary>
+    /// Looks up a localized string.
+    /// </summary>
+    public static string CascadingEditContextRequiredException
+    {
+      get
+      {
+        return GetResourceString();
+      }
+    }
+
+    /// <summary>
+    /// Looks up a localized string.
+    /// </summary>
+    public static string ParameterRequiredException
+    {
+      get
+      {
+        return GetResourceString();
+      }
+    }
+    /// <summary>
+    /// Looks up a localized string.
+    /// </summary>
+    public static string InterfaceNotImplementedException
     {
       get
       {

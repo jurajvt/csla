@@ -16,21 +16,6 @@ namespace Csla.Test.ValidationRules
       set { _counter = value; }
     }
 
-#if !SILVERLIGHT
-    public static RootThrowsException NewRoot()
-    {
-      return Csla.DataPortal.Create<RootThrowsException>();
-    }
-#endif
-
-
-    public static void NewRoot(EventHandler<DataPortalResult<RootThrowsException>> callback)
-    {
-      var portal = new DataPortal<RootThrowsException>();
-      portal.CreateCompleted += callback;
-      portal.BeginCreate();
-    }
-
     protected override void AddBusinessRules()
     {
       System.Threading.Interlocked.Increment(ref _counter);

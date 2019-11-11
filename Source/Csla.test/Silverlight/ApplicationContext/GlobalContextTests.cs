@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="GlobalContextTests.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
@@ -42,9 +42,7 @@ namespace Csla.Test.Silverlight.ApplicationContext
     {
       Csla.ApplicationContext.User = _currentPrincipal;
       Csla.ApplicationContext.GlobalContext.Clear();
-#if !SILVERLIGHT
       ConfigurationManager.AppSettings["CslaDataPortalProxy"] = null;
-#endif
     }
 
     #endregion

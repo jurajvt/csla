@@ -1,7 +1,7 @@
 ﻿//-----------------------------------------------------------------------
 // <copyright file="ObjectFactoryTests.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
+//     Website: https://cslanet.com
 // </copyright>
 // <summary>Always make sure to cleanup after each test </summary>
 //-----------------------------------------------------------------------
@@ -41,6 +41,7 @@ namespace Csla.Test.ObjectFactory
     }
 
     [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
     public void Create()
     {
       Csla.ApplicationContext.User = new Csla.Security.UnauthenticatedPrincipal();
@@ -70,17 +71,38 @@ namespace Csla.Test.ObjectFactory
     }
 
     [TestMethod]
+    public void CreateWithParam()
+    {
+      Csla.ApplicationContext.User = new Csla.Security.UnauthenticatedPrincipal();
+      Csla.ApplicationContext.DataPortalProxy = "Csla.Testing.Business.TestProxies.AppDomainProxy, Csla.Testing.Business";
+      Csla.Server.FactoryDataPortal.FactoryLoader =
+          new ObjectFactoryLoader();
+      var root = Csla.DataPortal.Create<Root>("abc");
+      Assert.AreEqual("Create abc", root.Data, "Data should match");
+      Assert.AreEqual(Csla.ApplicationContext.ExecutionLocations.Client, root.Location, "Location should match");
+      Assert.IsTrue(root.IsNew, "Should be new");
+      Assert.IsTrue(root.IsDirty, "Should be dirty");
+    }
+
+    // this test needs to be updated when the factory model is updated
+    // to use DI and multi-property criteria
+    [Ignore]
+    [TestMethod]
+    [ExpectedException(typeof(MissingMethodException))]
     public void CreateMissing()
     {
       Csla.ApplicationContext.User = new Csla.Security.UnauthenticatedPrincipal();
       Csla.ApplicationContext.DataPortalProxy = "Csla.Testing.Business.TestProxies.AppDomainProxy, Csla.Testing.Business";
       Csla.Server.FactoryDataPortal.FactoryLoader =
           new ObjectFactoryLoader(1);
-      var root = Csla.DataPortal.Create<Root>("abc");
-      Assert.AreEqual("Create abc", root.Data, "Data should match");
-      Assert.AreEqual(Csla.ApplicationContext.ExecutionLocations.Server, root.Location, "Location should match");
-      Assert.IsTrue(root.IsNew, "Should be new");
-      Assert.IsTrue(root.IsDirty, "Should be dirty");
+      try
+      {
+        var root = Csla.DataPortal.Create<Root>("abc", 123);
+      }
+      catch (DataPortalException ex)
+      {
+        throw ex.BusinessException;
+      }
     }
 
     [TestMethod]
@@ -99,7 +121,7 @@ namespace Csla.Test.ObjectFactory
     {
       Csla.Server.FactoryDataPortal.FactoryLoader =
         new ObjectFactoryLoader();
-      var root = Csla.DataPortal.Fetch<Root>(new SingleCriteria<Root, string>("abc"));
+      var root = Csla.DataPortal.Fetch<Root>("abc");
       Assert.AreEqual("abc", root.Data, "Data should match");
       Assert.IsFalse(root.IsNew, "Should not be new");
       Assert.IsFalse(root.IsDirty, "Should not be dirty");
@@ -118,31 +140,6 @@ namespace Csla.Test.ObjectFactory
       Assert.IsFalse(root.IsNew, "Should not be new");
       Assert.IsFalse(root.IsDirty, "Should not be dirty");
     }
-
-    // commented out because almost nobody has COM+ enabled anymore
-    //[TestMethod]
-    //public void UpdateEnterpriseServices()
-    //{
-    //  try
-    //  {
-    //    Csla.Server.FactoryDataPortal.FactoryLoader =
-    //      new ObjectFactoryLoader(2);
-    //    var root = new Root();
-    //    root.Data = "abc";
-    //    root = Csla.DataPortal.Update<Root>(root);
-    //    Assert.AreEqual(TransactionalTypes.EnterpriseServices, root.TransactionalType, "Transactional type should match");
-    //    Assert.AreEqual("Update", root.Data, "Data should match");
-    //    Assert.IsFalse(root.IsNew, "Should not be new");
-    //    Assert.IsFalse(root.IsDirty, "Should not be dirty");
-    //  }
-    //  catch (Csla.DataPortalException ex)
-    //  {
-    //    if (ex.InnerException.GetType().FullName == "System.EnterpriseServices.RegistrationException")
-    //      Assert.Inconclusive("COM+ not accessible");
-    //    else
-    //      throw;
-    //  }
-    //}
 
     [TestMethod]
     public void UpdateTransactionScope()
@@ -249,7 +246,7 @@ namespace Csla.Test.ObjectFactory
       Csla.Server.FactoryDataPortal.FactoryLoader =
         new ObjectFactoryLoader();
 
-      Csla.DataPortal.Delete<Root>(new SingleCriteria<Root, string>("abc"));
+      Csla.DataPortal.Delete<Root>("abc");
 
       Assert.AreEqual("Delete", Csla.ApplicationContext.GlobalContext["ObjectFactory"].ToString(), "Data should match");
     }
